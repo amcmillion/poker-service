@@ -33,6 +33,7 @@ public class PokerHandTest {
     );
 
     // Straight flush
+
     private final List<PokerCard> highStraightFlushCards = createPokerHandCards(
             new PokerCard(PokerCard.Rank.JACK, CardSuit.HEARTS),
             new PokerCard(PokerCard.Rank.QUEEN, CardSuit.HEARTS),
@@ -49,7 +50,7 @@ public class PokerHandTest {
             new PokerCard(PokerCard.Rank.TEN, CardSuit.SPADES)
     );
 
-    // Four-of-a-kind house
+    // Four-of-a-kind
 
     private final List<PokerCard> slightlyLowerQuartetCards = createPokerHandCards(
             new PokerCard(PokerCard.Rank.KING, CardSuit.DIAMONDS),
@@ -73,32 +74,6 @@ public class PokerHandTest {
             new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.TWO, CardSuit.DIAMONDS)
-    );
-    
-    // Straight cards
-
-    private final List<PokerCard> lowStraightCards = createPokerHandCards(
-            new PokerCard(PokerCard.Rank.TWO, CardSuit.SPADES),
-            new PokerCard(PokerCard.Rank.THREE, CardSuit.SPADES),
-            new PokerCard(PokerCard.Rank.FIVE, CardSuit.HEARTS),
-            new PokerCard(PokerCard.Rank.FOUR, CardSuit.DIAMONDS),
-            new PokerCard(PokerCard.Rank.SIX, CardSuit.CLUBS)
-    );
-
-    private final List<PokerCard> highStraightCards = createPokerHandCards(
-            new PokerCard(PokerCard.Rank.NINE, CardSuit.HEARTS),
-            new PokerCard(PokerCard.Rank.KING, CardSuit.DIAMONDS),
-            new PokerCard(PokerCard.Rank.QUEEN, CardSuit.SPADES),
-            new PokerCard(PokerCard.Rank.JACK, CardSuit.CLUBS),
-            new PokerCard(PokerCard.Rank.TEN, CardSuit.SPADES)
-    );
-
-    private final List<PokerCard> lowFlushCards = createPokerHandCards(
-            new PokerCard(PokerCard.Rank.TWO, CardSuit.DIAMONDS),
-            new PokerCard(PokerCard.Rank.SEVEN, CardSuit.DIAMONDS),
-            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
-            new PokerCard(PokerCard.Rank.FOUR, CardSuit.DIAMONDS),
-            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
     );
 
     // Full house
@@ -125,6 +100,32 @@ public class PokerHandTest {
             new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.ACE, CardSuit.DIAMONDS)
+    );
+    
+    // Straight cards
+
+    private final List<PokerCard> lowStraightCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.TWO, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.THREE, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.HEARTS),
+            new PokerCard(PokerCard.Rank.FOUR, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.CLUBS)
+    );
+
+    private final List<PokerCard> highStraightCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.NINE, CardSuit.HEARTS),
+            new PokerCard(PokerCard.Rank.KING, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.QUEEN, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.JACK, CardSuit.CLUBS),
+            new PokerCard(PokerCard.Rank.TEN, CardSuit.SPADES)
+    );
+
+    private final List<PokerCard> lowFlushCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.TWO, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SEVEN, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FOUR, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
     );
 
     // Two pair
@@ -259,15 +260,6 @@ public class PokerHandTest {
     public void isStraight_cardsInSequence_returnsTrue() {
         PokerHand flush = new PokerHand(royalFlushHeartsCards);
         assertTrue(flush.isStraight());
-    }
-
-    @Test
-    public void royalFlushTie_betterSuitWins() {
-        PokerHand royalFlushSpades = new PokerHand(royalFlushSpadesCards);
-        PokerHand royalFlushHearts = new PokerHand(royalFlushHeartsCards);
-
-        assertEquals(1, royalFlushSpades.compareTo(royalFlushHearts),
-                "Royal flush spades should beat royal flush hearts");
     }
 
     @Test

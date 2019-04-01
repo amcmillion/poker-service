@@ -1,14 +1,12 @@
 package com.poker.hand;
 
 import com.poker.card.PokerCard;
-import com.poker.card.PokerCard.CardSuit;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class HandRanking implements Comparable<HandRanking> {
     private HandRankType handRankType;
-    private CardSuit suit;
 
     /**
      * An ordered list of ranks among the groups in a respective hand. This list MUST NOT
@@ -16,23 +14,17 @@ public class HandRanking implements Comparable<HandRanking> {
      */
     private final List<PokerCard.Rank> groupRanks;
 
-    public HandRanking(HandRankType handRankType, PokerCard.Rank rank, CardSuit suit) {
+    public HandRanking(HandRankType handRankType, PokerCard.Rank rank) {
         List<PokerCard.Rank> groupRanks = new ArrayList();
         groupRanks.add(rank);
 
         this.handRankType = handRankType;
         this.groupRanks = groupRanks;
-        this.suit = suit;
     }
 
     public HandRanking(HandRankType handRankType, List<PokerCard.Rank> groupRanks) {
-        this(handRankType, groupRanks, null);
-    }
-
-    public HandRanking(HandRankType handRankType, List<PokerCard.Rank> groupRanks, CardSuit suit) {
         this.handRankType = handRankType;
         this.groupRanks = groupRanks;
-        this.suit = suit;
     }
 
     public HandRankType getHandRankType() {
@@ -58,10 +50,7 @@ public class HandRanking implements Comparable<HandRanking> {
             }
         }
 
-        // at this point all other things equal, we'll check the suit to determine tiebreaking
-        return suit == null
-                ? 0
-                : suit.compareTo(other.suit);
+        return 0;
     }
 
     public enum HandRankType {

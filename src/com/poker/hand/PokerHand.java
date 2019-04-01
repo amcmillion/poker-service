@@ -138,10 +138,10 @@ public class PokerHand implements Comparable<PokerHand> {
             if (isStraight) {
                 if (getHighCard().getRank() == PokerCard.Rank.ACE) {
                     return new HandRanking(
-                            HandRankType.ROYAL_FLUSH, getHighestRank(), getHighCard().getSuit());
+                            HandRankType.ROYAL_FLUSH, getHighestRank());
                 } else {
                     return new HandRanking(
-                            HandRankType.STRAIGHT_FLUSH, getHighestRank(), getHighCard().getSuit());
+                            HandRankType.STRAIGHT_FLUSH, getHighestRank());
                 }
             }
 
@@ -150,7 +150,7 @@ public class PokerHand implements Comparable<PokerHand> {
         }
 
         if (isStraight) {
-            return new HandRanking(HandRankType.STRAIGHT, singleRanks, getHighCard().getSuit());
+            return new HandRanking(HandRankType.STRAIGHT, singleRanks);
         }
 
         return new HandRanking(HandRankType.SINGLE, singleRanks);
