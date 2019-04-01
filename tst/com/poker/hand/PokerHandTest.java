@@ -1,7 +1,7 @@
 package com.poker.hand;
 
-import com.poker.card.CardSuit;
 import com.poker.card.PokerCard;
+import com.poker.card.PokerCard.CardSuit;
 import com.poker.hand.HandRanking.HandRankType;
 import org.junit.jupiter.api.Test;
 
@@ -68,6 +68,22 @@ public class PokerHandTest {
             new PokerCard(PokerCard.Rank.THREE, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.ACE, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> lowSinglesCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.KING, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.QUEEN, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.JACK, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.NINE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> highSinglesCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.KING, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.QUEEN, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.JACK, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.TEN, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.TWO, CardSuit.DIAMONDS)
     );
 
     @Test
@@ -158,6 +174,13 @@ public class PokerHandTest {
         PokerHand lowStraight = new PokerHand(lowStraightCards);
         PokerHand highStraight = new PokerHand(highStraightCards);
         assertTrue(highStraight.compareTo(lowStraight) > 0);
+    }
+
+    @Test
+    public void compareTo_differentSingles_returnsHigher() {
+        PokerHand lowSingles = new PokerHand(lowSinglesCards);
+        PokerHand highSingles = new PokerHand(highSinglesCards);
+        assertTrue(highSingles.compareTo(lowSingles) > 0);
     }
 
     // --------------

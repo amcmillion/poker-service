@@ -53,4 +53,11 @@ public class PokerCard implements Comparable<PokerCard> {
             this.value = value;
         }
     }
+
+    public enum CardSuit {
+        CLUBS,
+        DIAMONDS,
+        HEARTS,
+        SPADES;
+    }
 }

@@ -1,7 +1,7 @@
 package com.poker.hand;
 
-import com.poker.card.CardSuit;
 import com.poker.card.PokerCard;
+import com.poker.card.PokerCard.CardSuit;
 import com.poker.hand.HandRanking.HandRankType;
 
 import java.util.ArrayList;
@@ -137,9 +137,11 @@ public class PokerHand implements Comparable<PokerHand> {
         if (isFlush) {
             if (isStraight) {
                 if (getHighCard().getRank() == PokerCard.Rank.ACE) {
-                    return new HandRanking(HandRankType.ROYAL_FLUSH, getHighestRank());
+                    return new HandRanking(
+                            HandRankType.ROYAL_FLUSH, getHighestRank(), getHighCard().getSuit());
                 } else {
-                    return new HandRanking(HandRankType.STRAIGHT_FLUSH, getHighestRank());
+                    return new HandRanking(
+                            HandRankType.STRAIGHT_FLUSH, getHighestRank(), getHighCard().getSuit());
                 }
             }
 
@@ -148,7 +150,7 @@ public class PokerHand implements Comparable<PokerHand> {
         }
 
         if (isStraight) {
-            return new HandRanking(HandRankType.STRAIGHT, singleRanks);
+            return new HandRanking(HandRankType.STRAIGHT, singleRanks, getHighCard().getSuit());
         }
 
         return new HandRanking(HandRankType.SINGLE, singleRanks);
