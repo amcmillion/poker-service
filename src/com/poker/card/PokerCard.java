@@ -17,6 +17,10 @@ public class PokerCard implements Comparable<PokerCard> {
         return rank;
     }
 
+    public int difference(PokerCard otherCard) {
+        return this.rank.value - otherCard.rank.value;
+    }
+
     @Override
     public int compareTo(PokerCard other) {
         if (this.rank.compareTo(other.rank) == 0) {

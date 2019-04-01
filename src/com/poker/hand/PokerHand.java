@@ -64,7 +64,8 @@ public class PokerHand implements Comparable<PokerHand> {
             }
         }
 
-        // by this point we have a dictionary of ranks in the hand and their counts. Search for:
+        // We can now deduce from the max count and the number of distinct ranks what the max
+        // possible grouping is.
 
         if (maxCount == 4) {
             return HandRanking.FOUR_OF_A_KIND;
@@ -101,7 +102,15 @@ public class PokerHand implements Comparable<PokerHand> {
      * @return true if this hand contains a straight; false otherwise.
      */
     public boolean isStraight() {
-        return false;
+        int diff = 0;
+        for (int i = 0; i < cards.size() - 1; i++) {
+            diff = cards.get(i).difference(cards.get(i + 1));
+            if (diff != 1) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

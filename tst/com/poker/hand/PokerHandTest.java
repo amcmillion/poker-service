@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class PokerHandTest {
@@ -46,7 +47,7 @@ public class PokerHandTest {
 
     private final List<PokerCard> lowFlushCards = createPokerHandCards(
             new PokerCard(PokerCard.Rank.TWO, CardSuit.DIAMONDS),
-            new PokerCard(PokerCard.Rank.THREE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SEVEN, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.FOUR, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
@@ -94,9 +95,21 @@ public class PokerHandTest {
     }
 
     @Test
-    public void allOfSameSuit_allCardsInSameSuit_returnsFalse() {
+    public void allOfSameSuit_allCardsInSameSuit_returnsTrue() {
         PokerHand flush = new PokerHand(lowFlushCards);
-        assertFalse(flush.allOfSameSuit());
+        assertTrue(flush.allOfSameSuit());
+    }
+
+    @Test
+    public void isStraight_cardsNotInSequence_returnsFalse() {
+        PokerHand flush = new PokerHand(lowFlushCards);
+        assertFalse(flush.isStraight());
+    }
+
+    @Test
+    public void isStraight_cardsInSequence_returnsTrue() {
+        PokerHand flush = new PokerHand(royalFlushHeartsCards);
+        assertTrue(flush.isStraight());
     }
 
     @Test
