@@ -148,9 +148,16 @@ public class PokerHandTest {
     }
 
     @Test
-    public void getMaxGroupRanking_handIsStraight_returnsSingle() {
-        PokerHand royalFlush = new PokerHand(royalFlushHeartsCards);
-        assertEquals(HandRankType.SINGLE, royalFlush.getMaxGroupRanking());
+    public void getMaxGroupRanking_handIsStraight_returnsStraight() {
+        PokerHand lowStraight = new PokerHand(lowStraightCards);
+        assertEquals(HandRankType.STRAIGHT, lowStraight.getHandRanking().getHandRankType());
+    }
+
+    @Test
+    public void compareTo_differentStraights_returnsHigher() {
+        PokerHand lowStraight = new PokerHand(lowStraightCards);
+        PokerHand highStraight = new PokerHand(highStraightCards);
+        assertTrue(highStraight.compareTo(lowStraight) > 0);
     }
 
     // --------------

@@ -20,9 +20,9 @@ public class PokerHand implements Comparable<PokerHand> {
             throw new IllegalArgumentException("A poker hand must contain five cards!");
         }
 
-        this.cards = new ArrayList<PokerCard>();
+        this.cards = new ArrayList();
         this.cards.addAll(cards);
-        Collections.sort(this.cards);
+        Collections.sort(this.cards, Collections.reverseOrder());
     }
 
     private PokerCard getHighCard() {
@@ -42,61 +42,12 @@ public class PokerHand implements Comparable<PokerHand> {
     }
 
     /**
-     * Given two hands of the same ranking, determine which one wins. A positive value indicates
-     * this wins; a negative indicates the other hand wings; and zero means they tie.
+     * Returns the ranking of the hand, stored in a {@link HandRanking} so that secondary-ranks
+     * can be retained.
      *
-     * @param other the PokerHand to compare with
-     *
-     * @return 1 if this wins, -1 if this loses, or 0 if this ties with the other hand
+     * @return a {@link HandRanking} representing the hand
      */
-    public int compareSameRankings(PokerHand other, HandRankType ranking) {
-        switch (ranking) {
-            case STRAIGHT_FLUSH:
-            case FLUSH:
-            case STRAIGHT:
-            case SINGLE:
-                // cases where the highest card in the hand will be the tiebreaker
-                return this.getHighCard().compareTo(other.getHighCard());
-        }
-
-        return 0;
-    }
-
     public HandRanking getHandRanking() {
-        HandRankType maxRank = HandRankType.SINGLE;
-
-        boolean isStraight = isStraight();
-        boolean isFlush = isFlush();
-
-        if (isFlush) {
-            if (isStraight) {
-                if (getHighCard().getRank() == PokerCard.Rank.ACE) {
-                    return new HandRanking(HandRankType.ROYAL_FLUSH, getHighestRank());
-                } else {
-                    return new HandRanking(HandRankType.STRAIGHT_FLUSH, getHighestRank());
-                }
-            } else {
-                // is a flush but isn't straight
-                maxRank = HandRankType.maxOf(maxRank, HandRankType.FLUSH);
-            }
-        } else if (isStraight) {
-            // not a flush but is a straight
-            maxRank = HandRankType.maxOf(maxRank, HandRankType.STRAIGHT);
-        }
-
-        maxRank = HandRankType.maxOf(maxRank, getMaxGroupRanking());
-
-        return maxRank;
-    }
-
-    /**
-     * Returns the highest-value hand ranking based on card rank groupings (not considering suit
-     * or sequence (straights)). The possible values are four-of-a-kind, full house,
-     * three-of-a-kind, two-pair, pair, and single.
-     *
-     * @return the highest-value hand ranking based on card rank groupings
-     */
-    public HandRanking getMaxGroupRanking() {
         HashMap<PokerCard.Rank, Integer> rankToCountMap = new HashMap();
         int maxCount = 1;
 
@@ -114,11 +65,6 @@ public class PokerHand implements Comparable<PokerHand> {
                 maxCount = currentRankCount > maxCount ? currentRankCount : maxCount;
                 rankToCountMap.replace(currentRank, currentRankCount);
             }
-        }
-
-        if (rankToCountMap.size() == HAND_SIZE) {
-            // Short-circuit here if all distinct values: high card will determine the value
-            return new HandRanking(HandRankType.SINGLE, getHighestRank());
         }
 
         // We can now deduce from the max count and the number of distinct ranks what the max
@@ -170,7 +116,7 @@ public class PokerHand implements Comparable<PokerHand> {
 
         if (pairRanks.size() == 2) {
             // make sure we take the higher rank first
-            Collections.sort(pairRanks);
+            Collections.sort(pairRanks, Collections.reverseOrder());
             // put the last card (the "kicker") at the lowest priority rank
             pairRanks.add(2, singleRanks.get(0));
             return new HandRanking(HandRankType.TWO_PAIR, pairRanks);
@@ -180,6 +126,29 @@ public class PokerHand implements Comparable<PokerHand> {
             // put the most important rank, the pair's, at the start of the ranks list
             singleRanks.add(0, pairRanks.get(0));
             return new HandRanking(HandRankType.PAIR, singleRanks);
+        }
+
+        // We've ruled out all the hands that have groups of same-rank in them. Now check for
+        // straights and flushes.
+
+        boolean isStraight = isStraight();
+        boolean isFlush = isFlush();
+        // Straights and flushes are special cases where there will be no two cards of the same rank
+        if (isFlush) {
+            if (isStraight) {
+                if (getHighCard().getRank() == PokerCard.Rank.ACE) {
+                    return new HandRanking(HandRankType.ROYAL_FLUSH, getHighestRank());
+                } else {
+                    return new HandRanking(HandRankType.STRAIGHT_FLUSH, getHighestRank());
+                }
+            }
+
+            // not a straight but is a flush
+            return new HandRanking(HandRankType.FLUSH, singleRanks);
+        }
+
+        if (isStraight) {
+            return new HandRanking(HandRankType.STRAIGHT, singleRanks);
         }
 
         return new HandRanking(HandRankType.SINGLE, singleRanks);

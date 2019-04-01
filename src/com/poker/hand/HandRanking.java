@@ -15,16 +15,8 @@ public class HandRanking implements Comparable<HandRanking> {
     private final List<PokerCard.Rank> groupRanks;
 
     public HandRanking(HandRankType handRankType, PokerCard.Rank rank) {
-        this(handRankType, rank, null);
-    }
-
-    public HandRanking(HandRankType handRankType, PokerCard.Rank rank1, PokerCard.Rank rank2) {
         List<PokerCard.Rank> groupRanks = new ArrayList();
-        groupRanks.add(rank1);
-
-        if (rank2 != null) {
-            groupRanks.add(rank2);
-        }
+        groupRanks.add(rank);
 
         this.handRankType = handRankType;
         this.groupRanks = groupRanks;
@@ -58,7 +50,6 @@ public class HandRanking implements Comparable<HandRanking> {
             }
         }
 
-        // if we got here, the hands are identical in value
         return 0;
     }
 
