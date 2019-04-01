@@ -6,6 +6,7 @@ import com.poker.hand.HandRanking.HandRankType;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,6 +66,30 @@ public class PokerHandTest {
     private final List<PokerCard> highTwoPairCards = createPokerHandCards(
             new PokerCard(PokerCard.Rank.THREE, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.ACE, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.THREE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.ACE, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> lowPairCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.THREE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.TWO, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> slightlyHigherPairCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.THREE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FOUR, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> highPairCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.QUEEN, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.QUEEN, CardSuit.SPADES),
             new PokerCard(PokerCard.Rank.THREE, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.ACE, CardSuit.DIAMONDS)
@@ -174,6 +199,20 @@ public class PokerHandTest {
         PokerHand lowStraight = new PokerHand(lowStraightCards);
         PokerHand highStraight = new PokerHand(highStraightCards);
         assertTrue(highStraight.compareTo(lowStraight) > 0);
+    }
+
+    @Test
+    public void compareTo_differentPairs_returnsHigher() {
+        PokerHand lowPair = new PokerHand(lowPairCards);
+        PokerHand highPair = new PokerHand(highPairCards);
+        assertTrue(highPair.compareTo(lowPair) > 0);
+    }
+
+    @Test
+    public void compareTo_samePairs_kickerBreaksTie() {
+        PokerHand lowPair = new PokerHand(lowPairCards);
+        PokerHand slightlyHigherPair = new PokerHand(slightlyHigherPairCards);
+        assertTrue(slightlyHigherPair.compareTo(lowPair) > 0);
     }
 
     @Test
