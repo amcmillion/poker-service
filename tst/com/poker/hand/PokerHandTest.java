@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class PokerHandTest {
+    // Royal flush
     private final List<PokerCard> royalFlushHeartsCards = createPokerHandCards(
             new PokerCard(PokerCard.Rank.JACK, CardSuit.HEARTS),
             new PokerCard(PokerCard.Rank.QUEEN, CardSuit.HEARTS),
@@ -30,6 +31,51 @@ public class PokerHandTest {
             new PokerCard(PokerCard.Rank.JACK, CardSuit.SPADES),
             new PokerCard(PokerCard.Rank.TEN, CardSuit.SPADES)
     );
+
+    // Straight flush
+    private final List<PokerCard> highStraightFlushCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.JACK, CardSuit.HEARTS),
+            new PokerCard(PokerCard.Rank.QUEEN, CardSuit.HEARTS),
+            new PokerCard(PokerCard.Rank.NINE, CardSuit.HEARTS),
+            new PokerCard(PokerCard.Rank.TEN, CardSuit.HEARTS),
+            new PokerCard(PokerCard.Rank.KING, CardSuit.HEARTS)
+    );
+
+    private final List<PokerCard> lowStraightFlushCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.EIGHT, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.NINE, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.QUEEN, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.JACK, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.TEN, CardSuit.SPADES)
+    );
+
+    // Four-of-a-kind house
+
+    private final List<PokerCard> slightlyLowerQuartetCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.KING, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> lowQuartetCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.ACE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> highQuartetCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.TWO, CardSuit.DIAMONDS)
+    );
+    
+    // Straight cards
 
     private final List<PokerCard> lowStraightCards = createPokerHandCards(
             new PokerCard(PokerCard.Rank.TWO, CardSuit.SPADES),
@@ -55,12 +101,48 @@ public class PokerHandTest {
             new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
     );
 
+    // Full house
+
+    private final List<PokerCard> slightlyLowerFullHouseCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.KING, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.KING, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> lowFullHouseCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.ACE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.ACE, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> highFullHouseCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.ACE, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.ACE, CardSuit.DIAMONDS)
+    );
+
+    // Two pair
+
     private final List<PokerCard> lowTwoPairCards = createPokerHandCards(
             new PokerCard(PokerCard.Rank.TWO, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.TWO, CardSuit.SPADES),
             new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
             new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> slightlyHigherTwoPairCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.TWO, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.TWO, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SEVEN, CardSuit.DIAMONDS)
     );
 
     private final List<PokerCard> highTwoPairCards = createPokerHandCards(
@@ -195,10 +277,59 @@ public class PokerHandTest {
     }
 
     @Test
+    public void compareTo_differentStraightFlushes_returnsHigher() {
+        PokerHand lowStraightFlush = new PokerHand(lowStraightFlushCards);
+        PokerHand highStraightFlushCards = new PokerHand(this.highStraightFlushCards);
+        assertTrue(highStraightFlushCards.compareTo(lowStraightFlush) > 0);
+    }
+
+    @Test
+    public void compareTo_differentQuartet_returnsHigher() {
+        PokerHand lowQuartet = new PokerHand(lowQuartetCards);
+        PokerHand highQuartet = new PokerHand(highQuartetCards);
+        assertTrue(highQuartet.compareTo(lowQuartet) > 0);
+    }
+
+    @Test
+    public void compareTo_closeQuartets_pairBreaksTie() {
+        PokerHand lowQuartet = new PokerHand(lowQuartetCards);
+        PokerHand slightlyLowerQuartet = new PokerHand(slightlyLowerQuartetCards);
+        assertTrue(slightlyLowerQuartet.compareTo(lowQuartet) < 0);
+    }
+
+    @Test
     public void compareTo_differentStraights_returnsHigher() {
         PokerHand lowStraight = new PokerHand(lowStraightCards);
         PokerHand highStraight = new PokerHand(highStraightCards);
         assertTrue(highStraight.compareTo(lowStraight) > 0);
+    }
+
+    @Test
+    public void compareTo_differentFullHouse_returnsHigher() {
+        PokerHand lowFullHouse = new PokerHand(lowFullHouseCards);
+        PokerHand highFullHouse = new PokerHand(highFullHouseCards);
+        assertTrue(highFullHouse.compareTo(lowFullHouse) > 0);
+    }
+
+    @Test
+    public void compareTo_closeFullHouses_pairBreaksTie() {
+        PokerHand lowFullHouse = new PokerHand(lowFullHouseCards);
+        PokerHand slightlyLowerFullHouse = new PokerHand(slightlyLowerFullHouseCards);
+        assertTrue(slightlyLowerFullHouse.compareTo(lowFullHouse) < 0);
+    }
+
+    @Test
+    public void compareTo_differentTwoPairs_returnsHigher() {
+        PokerHand lowTwoPair = new PokerHand(lowTwoPairCards);
+        PokerHand highTwoPair = new PokerHand(highTwoPairCards);
+        assertTrue(highTwoPair.compareTo(lowTwoPair) > 0);
+    }
+
+    @Test
+    public void compareTo_sameTwoPairs_kickerBreaksTie() {
+        PokerHand lowTwoPair = new PokerHand(lowTwoPairCards);
+        PokerHand slightlyHigherTwoPair = new PokerHand(slightlyHigherTwoPairCards);
+        assertTrue(slightlyHigherTwoPair.compareTo(lowTwoPair) > 0);
     }
 
     @Test
