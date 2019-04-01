@@ -2,6 +2,7 @@ package com.poker.hand;
 
 import com.poker.card.CardSuit;
 import com.poker.card.PokerCard;
+import com.poker.hand.HandRanking.HandRankType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,15 +25,66 @@ public class PokerHand implements Comparable<PokerHand> {
         Collections.sort(this.cards);
     }
 
+    private PokerCard getHighCard() {
+        return this.cards.get(0);
+    }
+
+    private PokerCard.Rank getHighestRank() {
+        return getHighCard().getRank();
+    }
+
     @Override
     public int compareTo(PokerHand other) {
-        return this.getHandRanking()
-                .compareTo(other.getHandRanking());
+        HandRanking thisRanking = this.getHandRanking();
+        int comparison = thisRanking.compareTo(other.getHandRanking());
+
+        return comparison;
+    }
+
+    /**
+     * Given two hands of the same ranking, determine which one wins. A positive value indicates
+     * this wins; a negative indicates the other hand wings; and zero means they tie.
+     *
+     * @param other the PokerHand to compare with
+     *
+     * @return 1 if this wins, -1 if this loses, or 0 if this ties with the other hand
+     */
+    public int compareSameRankings(PokerHand other, HandRankType ranking) {
+        switch (ranking) {
+            case STRAIGHT_FLUSH:
+            case FLUSH:
+            case STRAIGHT:
+            case SINGLE:
+                // cases where the highest card in the hand will be the tiebreaker
+                return this.getHighCard().compareTo(other.getHighCard());
+        }
+
+        return 0;
     }
 
     public HandRanking getHandRanking() {
-        HandRanking maxRank = HandRanking.SINGLE;
-        maxRank = getMaxGroupRanking();
+        HandRankType maxRank = HandRankType.SINGLE;
+
+        boolean isStraight = isStraight();
+        boolean isFlush = isFlush();
+
+        if (isFlush) {
+            if (isStraight) {
+                if (getHighCard().getRank() == PokerCard.Rank.ACE) {
+                    return new HandRanking(HandRankType.ROYAL_FLUSH, getHighestRank());
+                } else {
+                    return new HandRanking(HandRankType.STRAIGHT_FLUSH, getHighestRank());
+                }
+            } else {
+                // is a flush but isn't straight
+                maxRank = HandRankType.maxOf(maxRank, HandRankType.FLUSH);
+            }
+        } else if (isStraight) {
+            // not a flush but is a straight
+            maxRank = HandRankType.maxOf(maxRank, HandRankType.STRAIGHT);
+        }
+
+        maxRank = HandRankType.maxOf(maxRank, getMaxGroupRanking());
 
         return maxRank;
     }
@@ -64,36 +116,73 @@ public class PokerHand implements Comparable<PokerHand> {
             }
         }
 
+        if (rankToCountMap.size() == HAND_SIZE) {
+            // Short-circuit here if all distinct values: high card will determine the value
+            return new HandRanking(HandRankType.SINGLE, getHighestRank());
+        }
+
         // We can now deduce from the max count and the number of distinct ranks what the max
         // possible grouping is.
+        PokerCard.Rank quartetRank = null;
+        PokerCard.Rank tripletRank = null;
+        List<PokerCard.Rank> pairRanks = new ArrayList();
+        List<PokerCard.Rank> singleRanks = new ArrayList();
 
-        if (maxCount == 4) {
-            return HandRanking.FOUR_OF_A_KIND;
+        Iterator<Map.Entry<PokerCard.Rank, Integer>> it = rankToCountMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<PokerCard.Rank, Integer> entry = it.next();
+            if (entry.getValue() == 4) {
+                quartetRank = entry.getKey();
+            } else if (entry.getValue() == 3) {
+                tripletRank = entry.getKey();
+            } else if (entry.getValue() == 2) {
+                pairRanks.add(entry.getKey());
+            } else if (entry.getValue() == 1) {
+                singleRanks.add(entry.getKey());
+            }
         }
 
-        if (maxCount == 3) {
+        // Now use the rankings we initialized to determine the overall hand ranking.
+
+        if (quartetRank != null) {
+            // single rank will have been initialized with the non-quartet rank
+            // insert the most important rank, the quartet's rank, at the start of the singles ranks
+            singleRanks.add(0, quartetRank);
+            return new HandRanking(HandRankType.FOUR_OF_A_KIND, singleRanks);
+        }
+
+        // At this point, we'll save the ranks of the singles ("kickers") so they can be used in
+        // case of a tie.
+        Collections.sort(singleRanks, Collections.reverseOrder());
+
+        if (tripletRank != null) {
             // this could be a full house or just three of a kind
-            Iterator<Map.Entry<PokerCard.Rank, Integer>> it = rankToCountMap.entrySet().iterator();
-            if (rankToCountMap.size() == 2) {
-                // only two ranks present, meaning this must be a three-of-a-kind and a pair
-                return HandRanking.FULL_HOUSE;
+            if (pairRanks.size() > 0) {
+                // insert the most important rank, the triplet rank, before the pair rank
+                pairRanks.add(0, tripletRank);
+                return new HandRanking(HandRankType.FULL_HOUSE, pairRanks);
             }
 
-            return HandRanking.THREE_OF_A_KIND;
+            // insert the most important rank, the triplet rank, at the start of the kickers list
+            singleRanks.add(0, tripletRank);
+            return new HandRanking(HandRankType.THREE_OF_A_KIND, singleRanks);
         }
 
-        if (rankToCountMap.size() == 3) {
-            // at this point, the only possible way for there to be three distinct ranks is if two
-            // pairs are present
-            return HandRanking.TWO_PAIR;
+        if (pairRanks.size() == 2) {
+            // make sure we take the higher rank first
+            Collections.sort(pairRanks);
+            // put the last card (the "kicker") at the lowest priority rank
+            pairRanks.add(2, singleRanks.get(0));
+            return new HandRanking(HandRankType.TWO_PAIR, pairRanks);
         }
 
-        if (rankToCountMap.size() == 4) {
-            // same deal, 4 distinct ranks means one pair is present
-            return HandRanking.PAIR;
+        if (pairRanks.size() == 1) {
+            // put the most important rank, the pair's, at the start of the ranks list
+            singleRanks.add(0, pairRanks.get(0));
+            return new HandRanking(HandRankType.PAIR, singleRanks);
         }
 
-        return HandRanking.SINGLE;
+        return new HandRanking(HandRankType.SINGLE, singleRanks);
     }
 
     /**
@@ -118,7 +207,7 @@ public class PokerHand implements Comparable<PokerHand> {
      *
      * @return true if all cards in this hand are of a common suit; false otherwise.
      */
-    public boolean allOfSameSuit() {
+    public boolean isFlush() {
         CardSuit suit = cards.get(0).getSuit();
         for (int i = 1; i < cards.size(); i++) {
             if (cards.get(i).getSuit().compareTo(suit) != 0) {

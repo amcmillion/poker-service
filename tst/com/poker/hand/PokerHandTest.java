@@ -2,6 +2,7 @@ package com.poker.hand;
 
 import com.poker.card.CardSuit;
 import com.poker.card.PokerCard;
+import com.poker.hand.HandRanking.HandRankType;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -53,6 +54,22 @@ public class PokerHandTest {
             new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
     );
 
+    private final List<PokerCard> lowTwoPairCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.TWO, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.TWO, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.SIX, CardSuit.DIAMONDS)
+    );
+
+    private final List<PokerCard> highTwoPairCards = createPokerHandCards(
+            new PokerCard(PokerCard.Rank.THREE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.ACE, CardSuit.SPADES),
+            new PokerCard(PokerCard.Rank.THREE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.FIVE, CardSuit.DIAMONDS),
+            new PokerCard(PokerCard.Rank.ACE, CardSuit.DIAMONDS)
+    );
+
     @Test
     public void pokerHand_notEnoughCards_exceptionThrown() {
         List<PokerCard> cards = new ArrayList();
@@ -85,19 +102,28 @@ public class PokerHandTest {
     @Test
     public void handRanking_royalFlush_happyCase() {
         PokerHand royalFlushHearts = new PokerHand(royalFlushHeartsCards);
-        assertEquals(HandRanking.ROYAL_FLUSH, royalFlushHearts.getHandRanking());
+        assertEquals(HandRankType.ROYAL_FLUSH, royalFlushHearts.getHandRanking().getHandRankType());
     }
 
     @Test
-    public void allOfSameSuit_notAllCardsInSameSuit_returnsFalse() {
+    public void getHandRanking_twoPairs_returnsProperRankings() {
+        PokerHand lowTwoPairs = new PokerHand(lowTwoPairCards);
+        HandRanking handRanking = lowTwoPairs.getHandRanking();
+        assertEquals(HandRankType.TWO_PAIR, handRanking.getHandRankType());
+        assertEquals(PokerCard.Rank.FIVE, handRanking.getGroupRanks().get(0));
+        assertEquals(PokerCard.Rank.TWO, handRanking.getGroupRanks().get(1));
+    }
+
+    @Test
+    public void isFlush_notAllCardsInSameSuit_returnsFalse() {
         PokerHand lowStraight = new PokerHand(lowStraightCards);
-        assertFalse(lowStraight.allOfSameSuit());
+        assertFalse(lowStraight.isFlush());
     }
 
     @Test
-    public void allOfSameSuit_allCardsInSameSuit_returnsTrue() {
+    public void isFlush_allCardsInSameSuit_returnsTrue() {
         PokerHand flush = new PokerHand(lowFlushCards);
-        assertTrue(flush.allOfSameSuit());
+        assertTrue(flush.isFlush());
     }
 
     @Test
@@ -124,7 +150,7 @@ public class PokerHandTest {
     @Test
     public void getMaxGroupRanking_handIsStraight_returnsSingle() {
         PokerHand royalFlush = new PokerHand(royalFlushHeartsCards);
-        assertEquals(HandRanking.SINGLE, royalFlush.getMaxGroupRanking());
+        assertEquals(HandRankType.SINGLE, royalFlush.getMaxGroupRanking());
     }
 
     // --------------
