@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class PokerHandTest {
     private final List<PokerCard> royalFlushHeartsCards = createPokerHandCards(
@@ -52,7 +53,33 @@ public class PokerHandTest {
     );
 
     @Test
-    public void pokerHand_
+    public void pokerHand_notEnoughCards_exceptionThrown() {
+        List<PokerCard> cards = new ArrayList();
+        cards.add(new PokerCard(PokerCard.Rank.JACK, CardSuit.HEARTS));
+
+        try {
+            PokerHand hand = new PokerHand(cards);
+        } catch (IllegalArgumentException ex) {
+            return;
+        }
+
+        fail("Single-card hands aren't allowed");
+    }
+
+    @Test
+    public void pokerHand_tooManyCards_exceptionThrown() {
+        List<PokerCard> cards = new ArrayList();
+        cards.add(new PokerCard(PokerCard.Rank.JACK, CardSuit.HEARTS));
+        cards.addAll(lowFlushCards);
+
+        try {
+            PokerHand hand = new PokerHand(cards);
+        } catch (IllegalArgumentException ex) {
+            return;
+        }
+
+        fail("Six-card hands aren't allowed");
+    }
 
     @Test
     public void handRanking_royalFlush_happyCase() {

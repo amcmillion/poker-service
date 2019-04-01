@@ -31,7 +31,10 @@ public class PokerHand implements Comparable<PokerHand> {
     }
 
     public HandRanking getHandRanking() {
-        return HandRanking.SINGLE;
+        HandRanking maxRank = HandRanking.SINGLE;
+        maxRank = getMaxGroupRanking();
+
+        return maxRank;
     }
 
     /**
